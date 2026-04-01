@@ -1,0 +1,40 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: taskflow
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      timeout: 5s
+      retries: 5
+
+  php:
+    container_name: php
+    depends_on:
+      mysql:
+        condition: service_healthy
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      DB_HOST: mysql
+      DB_DATABASE: taskflow
+      DB_USERNAME: laravel
+      DB_PASSWORD: laravel
+      APP_ENV: local
+      APP_DEBUG: "true"
+    command: >
+      sh -c "sleep 10 &&
+             php artisan migrate --force &&
+             php artisan serve --host=0.0.0.0"
+
+volumes:
+  mysql_data:
