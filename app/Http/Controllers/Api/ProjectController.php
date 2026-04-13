@@ -17,14 +17,9 @@ class ProjectController extends Controller
         $this->projectService = $projectService;
     }
 
-    /**
-     * GET /api/projects
-     * Listar projetos do usuário autenticado
-     */
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
-        $userId = $request->user()->id; // Usuário da requisição
-        $projects = $this->projectService->getUserProjects($userId);
+        $projects = $this->projectService->getUserProjects(1);
 
         return response()->json([
             'data' => $projects,
@@ -32,23 +27,15 @@ class ProjectController extends Controller
         ], 200);
     }
 
-    /**
-     * POST /api/projects
-     * Criar novo projeto
-     */
     public function store(Request $request): JsonResponse
     {
-        // Validar entrada
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'deadline' => 'nullable|date',
         ]);
 
-        $project = $this->projectService->createProject(
-            $request->user()->id,
-            $validated
-        );
+        $project = $this->projectService->createProject(1, $validated);
 
         return response()->json([
             'data' => $project,
@@ -56,10 +43,6 @@ class ProjectController extends Controller
         ], 201);
     }
 
-    /**
-     * GET /api/projects/{id}
-     * Obter projeto específico
-     */
     public function show(Project $project): JsonResponse
     {
         $projectWithDetails = $this->projectService->getProjectWithDetails($project->id);
@@ -70,10 +53,6 @@ class ProjectController extends Controller
         ], 200);
     }
 
-    /**
-     * PUT /api/projects/{id}
-     * Atualizar projeto
-     */
     public function update(Request $request, Project $project): JsonResponse
     {
         $validated = $request->validate([
@@ -91,10 +70,6 @@ class ProjectController extends Controller
         ], 200);
     }
 
-    /**
-     * DELETE /api/projects/{id}
-     * Deletar projeto
-     */
     public function destroy(Project $project): JsonResponse
     {
         $this->projectService->deleteProject($project);

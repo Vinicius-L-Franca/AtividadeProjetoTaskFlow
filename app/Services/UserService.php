@@ -29,8 +29,8 @@ class UserService
      */
     public function updateProfile(User $user, array $data): User
     {
-        $user->profile()->update($data);
-        return $user;
+        $user->profile()->updateOrCreate(['user_id' => $user->id], $data);
+        return $user->fresh()->load('profile');
     }
 
     /**

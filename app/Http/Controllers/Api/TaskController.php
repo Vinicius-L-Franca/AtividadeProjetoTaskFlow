@@ -144,27 +144,31 @@ class TaskController extends Controller
     }
 
     /**
-     * POST /api/projects/{projectId}/tasks/{taskId}/tags
-     * Associar tags à tarefa
+     * POST /api/tasks/{task}/tags/{tag}
      */
-    public function attachTags(Request $request, Project $project, Task $task): JsonResponse
+    public function attachTag(Project $project, Task $task, \App\Models\Tag $tag): JsonResponse
     {
-        if ($task->project_id !== $project->id) {
-            return response()->json([
-                'message' => 'Tarefa não encontrada',
-            ], 404);
+        if ($task->tags()->where('tag_id', $tag->id)->exists()) {
+            return response()->json(['message' => 'Tag já associada a esta tarefa'], 422);
         }
 
-        $validated = $request->validate([
-            'tag_ids' => 'required|array',
-            'tag_ids.*' => 'integer|exists:tags,id',
-        ]);
-
-        $updated = $this->taskService->attachTags($task, $validated['tag_ids']);
+        $task->tags()->attach($tag->id);
 
         return response()->json([
-            'data' => $updated,
-            'message' => 'Tags associadas com sucesso',
+            'data' => $task->load('tags'),
+            'message' => 'Tag associada com sucesso',
+        ], 200);
+    }
+
+    /**
+     * DELETE /api/tasks/{task}/tags/{tag}
+     */
+    public function detachTag(Project $project, Task $task, \App\Models\Tag $tag): JsonResponse
+    {
+        $task->tags()->detach($tag->id);
+
+        return response()->json([
+            'message' => 'Tag removida com sucesso',
         ], 200);
     }
 }

@@ -13,7 +13,7 @@ class ProjectService
     public function getUserProjects(int $userId)
     {
         return Project::where('user_id', $userId)
-            ->with('tasks')
+            ->withCount('tasks')
             ->get();
     }
 

@@ -55,7 +55,7 @@ class TaskService
      */
     public function attachTags(Task $task, array $tagIds): Task
     {
-        $task->tags()->sync($tagIds);
+        $task->tags()->attach($tagIds);
         return $task->fresh()->load('tags');
     }
 

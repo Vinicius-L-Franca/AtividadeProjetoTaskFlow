@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -16,25 +17,17 @@ class ProfileController extends Controller
         $this->userService = $userService;
     }
 
-    /**
-     * GET /api/users/{id}/profile
-     * Obter perfil do usuário
-     */
-    public function show(Request $request): JsonResponse
+    public function show(User $user): JsonResponse
     {
-        $user = $this->userService->getUserWithProfile($request->user()->id);
+        $result = $this->userService->getUserWithProfile($user->id);
 
         return response()->json([
-            'data' => $user,
+            'data' => $result,
             'message' => 'Perfil obtido com sucesso',
         ], 200);
     }
 
-    /**
-     * PUT /api/users/{id}/profile
-     * Atualizar perfil do usuário
-     */
-    public function update(Request $request): JsonResponse
+    public function update(Request $request, User $user): JsonResponse
     {
         $validated = $request->validate([
             'bio' => 'nullable|string',
@@ -42,10 +35,10 @@ class ProfileController extends Controller
             'avatar_url' => 'nullable|url',
         ]);
 
-        $user = $this->userService->updateProfile($request->user(), $validated);
+        $result = $this->userService->updateProfile($user, $validated);
 
         return response()->json([
-            'data' => $user,
+            'data' => $result,
             'message' => 'Perfil atualizado com sucesso',
         ], 200);
     }
