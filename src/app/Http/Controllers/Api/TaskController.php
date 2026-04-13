@@ -146,7 +146,7 @@ class TaskController extends Controller
     /**
      * POST /api/tasks/{task}/tags/{tag}
      */
-    public function attachTag(Project $project, Task $task, \App\Models\Tag $tag): JsonResponse
+    public function attachTag(Task $task, \App\Models\Tag $tag): JsonResponse
     {
         if ($task->tags()->where('tag_id', $tag->id)->exists()) {
             return response()->json(['message' => 'Tag já associada a esta tarefa'], 422);
@@ -163,7 +163,7 @@ class TaskController extends Controller
     /**
      * DELETE /api/tasks/{task}/tags/{tag}
      */
-    public function detachTag(Project $project, Task $task, \App\Models\Tag $tag): JsonResponse
+    public function detachTag(Task $task, \App\Models\Tag $tag): JsonResponse
     {
         $task->tags()->detach($tag->id);
 

@@ -1,0 +1,144 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TaskFlow API",
+        "description": "Documentacao da API de gerenciamento de projetos, tarefas e tags.",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Lista projetos",
+                "operationId": "listProjects",
+                "responses": {
+                    "200": {
+                        "description": "Projetos listados com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Projetos listados com sucesso"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "TaskFlow MVP"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "open"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/",
+                        "description": "Servidor local"
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Cria projeto",
+                "operationId": "createProject",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Novo Projeto"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Descricao do projeto",
+                                        "nullable": true
+                                    },
+                                    "deadline": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-06-30",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Projeto criado com sucesso"
+                    },
+                    "422": {
+                        "description": "Erro de validacao"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/tags": {
+            "get": {
+                "tags": [
+                    "Tags"
+                ],
+                "summary": "Lista tags",
+                "operationId": "listTags",
+                "responses": {
+                    "200": {
+                        "description": "Tags listadas com sucesso"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "/",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Projects",
+            "description": "Operacoes de projetos"
+        },
+        {
+            "name": "Tags",
+            "description": "Operacoes de tags"
+        }
+    ]
+}
